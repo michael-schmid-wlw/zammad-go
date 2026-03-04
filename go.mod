@@ -1,4 +1,4 @@
-module github.com/AlessandroSechi/zammad-go
+module github.com/michael-schmid-wlw/zammad-go
 
 go 1.23
 
