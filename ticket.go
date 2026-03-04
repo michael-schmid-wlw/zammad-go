@@ -1,6 +1,7 @@
 package zammad
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -8,7 +9,7 @@ import (
 )
 
 // Ticket is a zammad ticket.
-type Ticket[Customfields any] struct {
+type Ticket[T any] struct {
 	Title                 string        `json:"title"`
 	Group                 string        `json:"group"`
 	OwnerID               int           `json:"owner_id,omitempty"`
@@ -32,7 +33,43 @@ type Ticket[Customfields any] struct {
 	CreatedByID           int           `json:"created_by_id,omitempty"`
 	CreatedAt             time.Time     `json:"created_at,omitempty"`
 	UpdatedAt             time.Time     `json:"updated_at,omitempty"`
-	CustomFields          Customfields
+	CustomFields          T             `json:"-"`
+}
+
+func (t *Ticket[T]) UnmarshalJSON(data []byte) error {
+	type TicketAlias Ticket[T]
+	if err := json.Unmarshal(data, (*TicketAlias)(t)); err != nil {
+		return err
+	}
+	return json.Unmarshal(data, &t.CustomFields)
+}
+
+func (t Ticket[T]) MarshalJSON() ([]byte, error) {
+	type TicketAlias Ticket[T]
+
+	baseBytes, err := json.Marshal(TicketAlias(t))
+	if err != nil {
+		return nil, err
+	}
+
+	customBytes, err := json.Marshal(t.CustomFields)
+	if err != nil {
+		return nil, err
+	}
+
+	var base, custom map[string]json.RawMessage
+	if err := json.Unmarshal(baseBytes, &base); err != nil {
+		return nil, err
+	}
+	if err := json.Unmarshal(customBytes, &custom); err != nil {
+		return nil, err
+	}
+
+	for k, v := range custom {
+		base[k] = v
+	}
+
+	return json.Marshal(base)
 }
 
 func (c *client[T]) TicketListResult(opts ...Option) *Result[Ticket[T]] {
@@ -152,7 +189,6 @@ func (c *client[T]) TicketUpdate(ticketID int, t Ticket[T]) (Ticket[T], error) {
 }
 
 func (c *client[T]) TicketDelete(ticketID int) error {
-
 	req, err := c.NewRequest(http.MethodDelete, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/tickets/%d", ticketID)), nil)
 	if err != nil {
 		return err
