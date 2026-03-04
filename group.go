@@ -21,7 +21,7 @@ type Group struct {
 	UserIds            []int     `json:"user_ids"`
 }
 
-func (c *Client) GroupListListResult(opts ...Option) *Result[Group] {
+func (c *client[T]) GroupListListResult(opts ...Option) *Result[Group] {
 	return &Result[Group]{
 		res:     nil,
 		resFunc: c.GroupListWithOptions,
@@ -29,11 +29,11 @@ func (c *Client) GroupListListResult(opts ...Option) *Result[Group] {
 	}
 }
 
-func (c *Client) GroupList() ([]Group, error) {
+func (c *client[T]) GroupList() ([]Group, error) {
 	return c.GroupListListResult().FetchAll()
 }
 
-func (c *Client) GroupListWithOptions(ro RequestOptions) ([]Group, error) {
+func (c *client[T]) GroupListWithOptions(ro RequestOptions) ([]Group, error) {
 	var groups []Group
 
 	req, err := c.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", c.Url, "/api/v1/groups"), nil)
@@ -50,7 +50,7 @@ func (c *Client) GroupListWithOptions(ro RequestOptions) ([]Group, error) {
 	return groups, nil
 }
 
-func (c *Client) GroupShow(groupID int) (Group, error) {
+func (c *client[T]) GroupShow(groupID int) (Group, error) {
 	var group Group
 
 	req, err := c.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/groups/%d", groupID)), nil)
@@ -65,7 +65,7 @@ func (c *Client) GroupShow(groupID int) (Group, error) {
 	return group, nil
 }
 
-func (c *Client) GroupCreate(g Group) (Group, error) {
+func (c *client[T]) GroupCreate(g Group) (Group, error) {
 	var group Group
 
 	req, err := c.NewRequest(http.MethodPost, fmt.Sprintf("%s%s", c.Url, "/api/v1/groups"), g)
@@ -80,7 +80,7 @@ func (c *Client) GroupCreate(g Group) (Group, error) {
 	return group, nil
 }
 
-func (c *Client) GroupUpdate(groupID int, g Group) (Group, error) {
+func (c *client[T]) GroupUpdate(groupID int, g Group) (Group, error) {
 	var group Group
 
 	req, err := c.NewRequest(http.MethodPut, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/groups/%d", groupID)), g)
@@ -95,7 +95,7 @@ func (c *Client) GroupUpdate(groupID int, g Group) (Group, error) {
 	return group, nil
 }
 
-func (c *Client) GroupDelete(groupID int) error {
+func (c *client[T]) GroupDelete(groupID int) error {
 
 	req, err := c.NewRequest(http.MethodDelete, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/groups/%d", groupID)), nil)
 	if err != nil {

@@ -12,7 +12,7 @@ import (
 //	to adjust any of Zammads default fields.
 type Object *map[string]interface{}
 
-func (c *Client) ObjectListResult(opts ...Option) *Result[Object] {
+func (c *client[T]) ObjectListResult(opts ...Option) *Result[Object] {
 	return &Result[Object]{
 		res:     nil,
 		resFunc: c.ObjectListWithOptions,
@@ -20,11 +20,11 @@ func (c *Client) ObjectListResult(opts ...Option) *Result[Object] {
 	}
 }
 
-func (c *Client) ObjectList() ([]Object, error) {
+func (c *client[T]) ObjectList() ([]Object, error) {
 	return c.ObjectListResult().FetchAll()
 }
 
-func (c *Client) ObjectListWithOptions(ro RequestOptions) ([]Object, error) {
+func (c *client[T]) ObjectListWithOptions(ro RequestOptions) ([]Object, error) {
 	var objects []Object
 
 	req, err := c.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", c.Url, "/api/v1/object_manager_attributes"), nil)
@@ -41,7 +41,7 @@ func (c *Client) ObjectListWithOptions(ro RequestOptions) ([]Object, error) {
 	return objects, nil
 }
 
-func (c *Client) ObjectShow(objectID int) (Object, error) {
+func (c *client[T]) ObjectShow(objectID int) (Object, error) {
 	var object Object
 
 	req, err := c.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/object_manager_attributes/%d", objectID)), nil)
@@ -56,7 +56,7 @@ func (c *Client) ObjectShow(objectID int) (Object, error) {
 	return object, nil
 }
 
-func (c *Client) ObjectCreate(o Object) (Object, error) {
+func (c *client[T]) ObjectCreate(o Object) (Object, error) {
 	var object Object
 
 	req, err := c.NewRequest(http.MethodPost, fmt.Sprintf("%s%s", c.Url, "/api/v1/object_manager_attributes"), o)
@@ -71,7 +71,7 @@ func (c *Client) ObjectCreate(o Object) (Object, error) {
 	return object, nil
 }
 
-func (c *Client) ObjectUpdate(objectID int, o Object) (Object, error) {
+func (c *client[T]) ObjectUpdate(objectID int, o Object) (Object, error) {
 	var object Object
 
 	req, err := c.NewRequest(http.MethodPut, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/object_manager_attributes/%d", objectID)), o)
@@ -86,7 +86,7 @@ func (c *Client) ObjectUpdate(objectID int, o Object) (Object, error) {
 	return object, nil
 }
 
-func (c *Client) ObjectExecuteDatabaseMigration() error {
+func (c *client[T]) ObjectExecuteDatabaseMigration() error {
 
 	req, err := c.NewRequest(http.MethodPost, fmt.Sprintf("%s%s", c.Url, "/api/v1/object_manager_attributes_execute_migrations"), nil)
 	if err != nil {

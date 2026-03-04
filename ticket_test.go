@@ -95,7 +95,7 @@ func TestTicketCreate(t *testing.T) {
 	}
 
 	// these values might not map to your zammad instance.
-	ticket := Ticket{
+	ticket := Ticket[struct{}]{
 		Title:    "test: test",
 		Group:    "Sysadmin",
 		Customer: "bram",

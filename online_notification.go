@@ -20,7 +20,7 @@ type OnlineNotification struct {
 	UpdatedAt      time.Time `json:"updated_at"`
 }
 
-func (c *Client) OnlineNotificationListResult(opts ...Option) *Result[OnlineNotification] {
+func (c *client[T]) OnlineNotificationListResult(opts ...Option) *Result[OnlineNotification] {
 	return &Result[OnlineNotification]{
 		res:     nil,
 		resFunc: c.OnlineNotificationListWithOptions,
@@ -28,11 +28,11 @@ func (c *Client) OnlineNotificationListResult(opts ...Option) *Result[OnlineNoti
 	}
 }
 
-func (c *Client) OnlineNotificationList() ([]OnlineNotification, error) {
+func (c *client[T]) OnlineNotificationList() ([]OnlineNotification, error) {
 	return c.OnlineNotificationListResult().FetchAll()
 }
 
-func (c *Client) OnlineNotificationListWithOptions(ro RequestOptions) ([]OnlineNotification, error) {
+func (c *client[T]) OnlineNotificationListWithOptions(ro RequestOptions) ([]OnlineNotification, error) {
 	var notifications []OnlineNotification
 
 	req, err := c.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", c.Url, "/api/v1/online_notifications"), nil)
@@ -49,7 +49,7 @@ func (c *Client) OnlineNotificationListWithOptions(ro RequestOptions) ([]OnlineN
 	return notifications, nil
 }
 
-func (c *Client) OnlineNotificationShow(notificationID int) (OnlineNotification, error) {
+func (c *client[T]) OnlineNotificationShow(notificationID int) (OnlineNotification, error) {
 	var notification OnlineNotification
 
 	req, err := c.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/online_notifications/%d", notificationID)), nil)
@@ -64,7 +64,7 @@ func (c *Client) OnlineNotificationShow(notificationID int) (OnlineNotification,
 	return notification, nil
 }
 
-func (c *Client) OnlineNotificationUpdate(notificationID int, n OnlineNotification) (OnlineNotification, error) {
+func (c *client[T]) OnlineNotificationUpdate(notificationID int, n OnlineNotification) (OnlineNotification, error) {
 	var notification OnlineNotification
 
 	req, err := c.NewRequest(http.MethodPut, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/online_notifications/%d", notificationID)), n)
@@ -79,7 +79,7 @@ func (c *Client) OnlineNotificationUpdate(notificationID int, n OnlineNotificati
 	return notification, nil
 }
 
-func (c *Client) OnlineNotificationDelete(notificationID int) error {
+func (c *client[T]) OnlineNotificationDelete(notificationID int) error {
 
 	req, err := c.NewRequest(http.MethodDelete, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/online_notifications/%d", notificationID)), nil)
 	if err != nil {
@@ -93,7 +93,7 @@ func (c *Client) OnlineNotificationDelete(notificationID int) error {
 	return nil
 }
 
-func (c *Client) OnlineNotificationMarkAllAsRead() error {
+func (c *client[T]) OnlineNotificationMarkAllAsRead() error {
 
 	req, err := c.NewRequest(http.MethodPost, fmt.Sprintf("%s%s", c.Url, "/api/v1/online_notifications/mark_all_as_read"), nil)
 	if err != nil {

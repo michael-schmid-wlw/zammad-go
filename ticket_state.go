@@ -20,7 +20,7 @@ type TicketState struct {
 	CreatedAt        time.Time `json:"created_at"`
 }
 
-func (c *Client) TicketStateListResult(opts ...Option) *Result[TicketState] {
+func (c *client[T]) TicketStateListResult(opts ...Option) *Result[TicketState] {
 	return &Result[TicketState]{
 		res:     nil,
 		resFunc: c.TicketStateListWithOptions,
@@ -28,11 +28,11 @@ func (c *Client) TicketStateListResult(opts ...Option) *Result[TicketState] {
 	}
 }
 
-func (c *Client) TicketStateList() ([]TicketState, error) {
+func (c *client[T]) TicketStateList() ([]TicketState, error) {
 	return c.TicketStateListResult().FetchAll()
 }
 
-func (c *Client) TicketStateListWithOptions(ro RequestOptions) ([]TicketState, error) {
+func (c *client[T]) TicketStateListWithOptions(ro RequestOptions) ([]TicketState, error) {
 	var ticketStates []TicketState
 
 	req, err := c.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", c.Url, "/api/v1/ticket_states"), nil)
@@ -49,7 +49,7 @@ func (c *Client) TicketStateListWithOptions(ro RequestOptions) ([]TicketState, e
 	return ticketStates, nil
 }
 
-func (c *Client) TicketStateShow(ticketStateID int) (TicketState, error) {
+func (c *client[T]) TicketStateShow(ticketStateID int) (TicketState, error) {
 	var ticketState TicketState
 
 	req, err := c.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/ticket_states/%d", ticketStateID)), nil)
@@ -64,7 +64,7 @@ func (c *Client) TicketStateShow(ticketStateID int) (TicketState, error) {
 	return ticketState, nil
 }
 
-func (c *Client) TicketStateCreate(t TicketState) (TicketState, error) {
+func (c *client[T]) TicketStateCreate(t TicketState) (TicketState, error) {
 	var ticketState TicketState
 
 	req, err := c.NewRequest(http.MethodPost, fmt.Sprintf("%s%s", c.Url, "/api/v1/ticket_states"), t)
@@ -79,7 +79,7 @@ func (c *Client) TicketStateCreate(t TicketState) (TicketState, error) {
 	return ticketState, nil
 }
 
-func (c *Client) TicketStateUpdate(ticketStateID int, t TicketState) (TicketState, error) {
+func (c *client[T]) TicketStateUpdate(ticketStateID int, t TicketState) (TicketState, error) {
 	var ticketState TicketState
 
 	req, err := c.NewRequest(http.MethodPut, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/ticket_states/%d", ticketStateID)), t)
@@ -94,7 +94,7 @@ func (c *Client) TicketStateUpdate(ticketStateID int, t TicketState) (TicketStat
 	return ticketState, nil
 }
 
-func (c *Client) TicketStateDelete(ticketStateID int) error {
+func (c *client[T]) TicketStateDelete(ticketStateID int) error {
 
 	req, err := c.NewRequest(http.MethodDelete, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/ticket_states/%d", ticketStateID)), nil)
 	if err != nil {

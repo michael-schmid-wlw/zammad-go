@@ -15,8 +15,12 @@ func New(URL string) *Client {
 	return &Client{Client: &http.Client{Timeout: 5 * time.Second}, Url: URL}
 }
 
+func NewWithCustomTicketFields[T any](URL string) *client[T] {
+	return &client[T]{Client: &http.Client{Timeout: 5 * time.Second}, Url: URL}
+}
+
 // NewRequest constructs a request and converts the payload to JSON.
-func (c *Client) NewRequest(method, url string, payload interface{}) (*http.Request, error) {
+func (c *client[T]) NewRequest(method, url string, payload interface{}) (*http.Request, error) {
 	var buf io.Reader
 	if payload != nil {
 		b, err := json.Marshal(&payload)
@@ -44,7 +48,7 @@ func (c *Client) NewRequest(method, url string, payload interface{}) (*http.Requ
 
 // send makes a request to the API, the response body will be unmarshaled into v, or if v is an io.Writer, the response
 // will be written to it without decoding. This can be helpful when debugging.
-func (c *Client) send(req *http.Request, v interface{}) error {
+func (c *client[T]) send(req *http.Request, v interface{}) error {
 	resp, err := c.Client.Do(req)
 	if err != nil {
 		return err
@@ -81,7 +85,7 @@ func (c *Client) send(req *http.Request, v interface{}) error {
 }
 
 // sendWithAuth makes a request to the API and apply the proper authentication header automatically.
-func (c *Client) sendWithAuth(req *http.Request, v interface{}) error {
+func (c *client[T]) sendWithAuth(req *http.Request, v interface{}) error {
 	//Detect Authentication Type
 	if c.Username != "" && c.Password != "" {
 		req.SetBasicAuth(c.Username, c.Password)

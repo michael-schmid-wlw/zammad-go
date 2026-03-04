@@ -12,7 +12,7 @@ type Tag struct {
 	Name string `json:"name"`
 }
 
-func (c *Client) TagSearch(term string) ([]Tag, error) {
+func (c *client[T]) TagSearch(term string) ([]Tag, error) {
 	var tags []Tag
 
 	req, err := c.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/tag_search?term=%s", url.QueryEscape(term))), nil)
@@ -27,7 +27,7 @@ func (c *Client) TagSearch(term string) ([]Tag, error) {
 	return tags, nil
 }
 
-func (c *Client) TagAdd(t Tag) error {
+func (c *client[T]) TagAdd(t Tag) error {
 
 	req, err := c.NewRequest(http.MethodPost, fmt.Sprintf("%s%s", c.Url, "/api/v1/tags/add"), t)
 	if err != nil {
@@ -41,7 +41,7 @@ func (c *Client) TagAdd(t Tag) error {
 	return nil
 }
 
-func (c *Client) TagRemove(t Tag) error {
+func (c *client[T]) TagRemove(t Tag) error {
 
 	req, err := c.NewRequest(http.MethodDelete, fmt.Sprintf("%s%s", c.Url, "/api/v1/tags/remove"), t)
 	if err != nil {
@@ -55,7 +55,7 @@ func (c *Client) TagRemove(t Tag) error {
 	return nil
 }
 
-func (c *Client) TagAdminList() ([]Tag, error) {
+func (c *client[T]) TagAdminList() ([]Tag, error) {
 	var tags []Tag
 
 	req, err := c.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", c.Url, "/api/v1/tag_list"), nil)
@@ -70,7 +70,7 @@ func (c *Client) TagAdminList() ([]Tag, error) {
 	return tags, nil
 }
 
-func (c *Client) TagAdminCreate(t Tag) error {
+func (c *client[T]) TagAdminCreate(t Tag) error {
 
 	req, err := c.NewRequest(http.MethodPost, fmt.Sprintf("%s%s", c.Url, "/api/v1/tag_list"), t)
 	if err != nil {
@@ -84,7 +84,7 @@ func (c *Client) TagAdminCreate(t Tag) error {
 	return nil
 }
 
-func (c *Client) TagAdminRename(tagID int, t Tag) error {
+func (c *client[T]) TagAdminRename(tagID int, t Tag) error {
 
 	req, err := c.NewRequest(http.MethodPut, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/tag_list/%d", tagID)), t)
 	if err != nil {
@@ -98,7 +98,7 @@ func (c *Client) TagAdminRename(tagID int, t Tag) error {
 	return nil
 }
 
-func (c *Client) TagAdminDelete(tagID int) error {
+func (c *client[T]) TagAdminDelete(tagID int) error {
 
 	req, err := c.NewRequest(http.MethodDelete, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/tag_list/%d", tagID)), nil)
 	if err != nil {

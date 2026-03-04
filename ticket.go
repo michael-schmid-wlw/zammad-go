@@ -8,7 +8,7 @@ import (
 )
 
 // Ticket is a zammad ticket.
-type Ticket struct {
+type Ticket[Customfields any] struct {
 	Title                 string        `json:"title"`
 	Group                 string        `json:"group"`
 	OwnerID               int           `json:"owner_id,omitempty"`
@@ -32,22 +32,23 @@ type Ticket struct {
 	CreatedByID           int           `json:"created_by_id,omitempty"`
 	CreatedAt             time.Time     `json:"created_at,omitempty"`
 	UpdatedAt             time.Time     `json:"updated_at,omitempty"`
+	CustomFields          Customfields
 }
 
-func (c *Client) TicketListResult(opts ...Option) *Result[Ticket] {
-	return &Result[Ticket]{
+func (c *client[T]) TicketListResult(opts ...Option) *Result[Ticket[T]] {
+	return &Result[Ticket[T]]{
 		res:     nil,
 		resFunc: c.TicketListWithOptions,
 		opts:    NewRequestOptions(opts...),
 	}
 }
 
-func (c *Client) TicketList() ([]Ticket, error) {
+func (c *client[T]) TicketList() ([]Ticket[T], error) {
 	return c.TicketListResult().FetchAll()
 }
 
-func (c *Client) TicketListWithOptions(ro RequestOptions) ([]Ticket, error) {
-	var tickets []Ticket
+func (c *client[T]) TicketListWithOptions(ro RequestOptions) ([]Ticket[T], error) {
+	var tickets []Ticket[T]
 
 	req, err := c.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", c.Url, "/api/v1/tickets"), nil)
 	if err != nil {
@@ -64,9 +65,9 @@ func (c *Client) TicketListWithOptions(ro RequestOptions) ([]Ticket, error) {
 }
 
 // TicketSearch searches for tickets. See https://docs.zammad.org/en/latest/api/ticket/index.html#search.
-func (c *Client) TicketSearch(query string, limit int) ([]Ticket, error) {
+func (c *client[T]) TicketSearch(query string, limit int) ([]Ticket[T], error) {
 	type Assets struct {
-		AssetTicket map[int]Ticket `json:"ticket"`
+		AssetTicket map[int]Ticket[T] `json:"ticket"`
 	}
 
 	type TickSearch struct {
@@ -85,7 +86,7 @@ func (c *Client) TicketSearch(query string, limit int) ([]Ticket, error) {
 		return nil, err
 	}
 
-	tickets := make([]Ticket, ticksearch.Count)
+	tickets := make([]Ticket[T], ticksearch.Count)
 	i := 0
 	for _, t1 := range ticksearch.Assets.AssetTicket {
 		tickets[i] = t1
@@ -94,8 +95,8 @@ func (c *Client) TicketSearch(query string, limit int) ([]Ticket, error) {
 	return tickets, nil
 }
 
-func (c *Client) TicketShow(ticketID int) (Ticket, error) {
-	var ticket Ticket
+func (c *client[T]) TicketShow(ticketID int) (Ticket[T], error) {
+	var ticket Ticket[T]
 
 	req, err := c.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/tickets/%d", ticketID)), nil)
 	if err != nil {
@@ -120,8 +121,8 @@ func (c *Client) TicketShow(ticketID int) (Ticket, error) {
 //			Body: "body of comment",
 //		},
 //	}
-func (c *Client) TicketCreate(t Ticket) (Ticket, error) {
-	var ticket Ticket
+func (c *client[T]) TicketCreate(t Ticket[T]) (Ticket[T], error) {
+	var ticket Ticket[T]
 
 	req, err := c.NewRequest(http.MethodPost, fmt.Sprintf("%s%s", c.Url, "/api/v1/tickets"), t)
 	if err != nil {
@@ -135,8 +136,8 @@ func (c *Client) TicketCreate(t Ticket) (Ticket, error) {
 	return ticket, nil
 }
 
-func (c *Client) TicketUpdate(ticketID int, t Ticket) (Ticket, error) {
-	var ticket Ticket
+func (c *client[T]) TicketUpdate(ticketID int, t Ticket[T]) (Ticket[T], error) {
+	var ticket Ticket[T]
 
 	req, err := c.NewRequest(http.MethodPut, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/tickets/%d", ticketID)), t)
 	if err != nil {
@@ -150,7 +151,7 @@ func (c *Client) TicketUpdate(ticketID int, t Ticket) (Ticket, error) {
 	return ticket, nil
 }
 
-func (c *Client) TicketDelete(ticketID int) error {
+func (c *client[T]) TicketDelete(ticketID int) error {
 
 	req, err := c.NewRequest(http.MethodDelete, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/tickets/%d", ticketID)), nil)
 	if err != nil {

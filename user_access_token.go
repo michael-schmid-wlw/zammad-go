@@ -57,7 +57,7 @@ func (d *Date) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (c *Client) UserAccessTokenList() ([]UserAccessToken, error) {
+func (c *client[T]) UserAccessTokenList() ([]UserAccessToken, error) {
 	type TockList struct {
 		Tokens      []UserAccessToken `json:"tokens"`
 		Permissions []Permission      `json:"permissions"`
@@ -82,7 +82,7 @@ func (c *Client) UserAccessTokenList() ([]UserAccessToken, error) {
 	return userAccessTokens, nil
 }
 
-func (c *Client) UserAccessTokenCreate(t UserAccessToken) (UserAccessToken, error) {
+func (c *client[T]) UserAccessTokenCreate(t UserAccessToken) (UserAccessToken, error) {
 	var userAccessToken UserAccessToken
 
 	req, err := c.NewRequest("POST", fmt.Sprintf("%s%s", c.Url, "/api/v1/user_access_token"), t)
@@ -97,7 +97,7 @@ func (c *Client) UserAccessTokenCreate(t UserAccessToken) (UserAccessToken, erro
 	return userAccessToken, nil
 }
 
-func (c *Client) UserAccessTokenDelete(tokenID int) error {
+func (c *client[T]) UserAccessTokenDelete(tokenID int) error {
 
 	req, err := c.NewRequest("DELETE", fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/user_access_token/%d", tokenID)), nil)
 	if err != nil {

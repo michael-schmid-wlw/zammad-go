@@ -32,7 +32,7 @@ type TicketArticle struct {
 	UpdatedBy   string    `json:"updated_by,omitempty"`
 }
 
-func (c *Client) TicketArticleByTicket(ticketID int) ([]TicketArticle, error) {
+func (c *client[T]) TicketArticleByTicket(ticketID int) ([]TicketArticle, error) {
 	var ticketArticles []TicketArticle
 
 	req, err := c.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/ticket_articles/by_ticket/%d", ticketID)), nil)
@@ -47,7 +47,7 @@ func (c *Client) TicketArticleByTicket(ticketID int) ([]TicketArticle, error) {
 	return ticketArticles, nil
 }
 
-func (c *Client) TicketArticleShow(ticketArticleID int) (TicketArticle, error) {
+func (c *client[T]) TicketArticleShow(ticketArticleID int) (TicketArticle, error) {
 	var ticketArticle TicketArticle
 
 	req, err := c.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/ticket_articles/%d", ticketArticleID)), nil)
@@ -62,7 +62,7 @@ func (c *Client) TicketArticleShow(ticketArticleID int) (TicketArticle, error) {
 	return ticketArticle, nil
 }
 
-func (c *Client) TicketArticleCreate(t TicketArticle) (TicketArticle, error) {
+func (c *client[T]) TicketArticleCreate(t TicketArticle) (TicketArticle, error) {
 	var ticketArticle TicketArticle
 
 	req, err := c.NewRequest(http.MethodPost, fmt.Sprintf("%s%s", c.Url, "/api/v1/ticket_articles"), t)

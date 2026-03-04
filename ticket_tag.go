@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func (c *Client) TicketTagByTicket(ticketID int) ([]Tag, error) {
+func (c *client[T]) TicketTagByTicket(ticketID int) ([]Tag, error) {
 	var tags struct {
 		Tags []string
 	}

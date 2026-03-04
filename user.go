@@ -20,7 +20,7 @@ type User struct {
 }
 
 // UserMe returns the current authenticated user.
-func (c *Client) UserMe() (User, error) {
+func (c *client[T]) UserMe() (User, error) {
 	var user User
 
 	req, err := c.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", c.Url, "/api/v1/users/me"), nil)
@@ -35,7 +35,7 @@ func (c *Client) UserMe() (User, error) {
 	return user, nil
 }
 
-func (c *Client) UserListResult(opts ...Option) *Result[User] {
+func (c *client[T]) UserListResult(opts ...Option) *Result[User] {
 	return &Result[User]{
 		res:     nil,
 		resFunc: c.UserListWithOptions,
@@ -43,11 +43,11 @@ func (c *Client) UserListResult(opts ...Option) *Result[User] {
 	}
 }
 
-func (c *Client) UserList() ([]User, error) {
+func (c *client[T]) UserList() ([]User, error) {
 	return c.UserListResult().FetchAll()
 }
 
-func (c *Client) UserListWithOptions(ro RequestOptions) ([]User, error) {
+func (c *client[T]) UserListWithOptions(ro RequestOptions) ([]User, error) {
 	var users []User
 
 	req, err := c.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", c.Url, "/api/v1/users"), nil)
@@ -64,7 +64,7 @@ func (c *Client) UserListWithOptions(ro RequestOptions) ([]User, error) {
 	return users, nil
 }
 
-func (c *Client) UserSearch(query string, limit int) ([]User, error) {
+func (c *client[T]) UserSearch(query string, limit int) ([]User, error) {
 	var users []User
 
 	req, err := c.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/users/search?query=%s&limit=%d", url.QueryEscape(query), limit)), nil)
@@ -79,7 +79,7 @@ func (c *Client) UserSearch(query string, limit int) ([]User, error) {
 	return users, nil
 }
 
-func (c *Client) UserShow(userID int) (User, error) {
+func (c *client[T]) UserShow(userID int) (User, error) {
 	var user User
 
 	req, err := c.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/users/%d", userID)), nil)
@@ -94,7 +94,7 @@ func (c *Client) UserShow(userID int) (User, error) {
 	return user, nil
 }
 
-func (c *Client) UserCreate(u User) (User, error) {
+func (c *client[T]) UserCreate(u User) (User, error) {
 	var user User
 
 	req, err := c.NewRequest(http.MethodPost, fmt.Sprintf("%s%s", c.Url, "/api/v1/users"), u)
@@ -109,7 +109,7 @@ func (c *Client) UserCreate(u User) (User, error) {
 	return user, nil
 }
 
-func (c *Client) UserUpdate(userID int, u User) (User, error) {
+func (c *client[T]) UserUpdate(userID int, u User) (User, error) {
 	var user User
 
 	req, err := c.NewRequest(http.MethodPut, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/users/%d", userID)), u)
@@ -124,7 +124,7 @@ func (c *Client) UserUpdate(userID int, u User) (User, error) {
 	return user, nil
 }
 
-func (c *Client) UserDelete(userID int) error {
+func (c *client[T]) UserDelete(userID int) error {
 
 	req, err := c.NewRequest(http.MethodDelete, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/users/%d", userID)), nil)
 	if err != nil {

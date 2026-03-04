@@ -21,7 +21,7 @@ type TicketPriority struct {
 	UpdatedAt     time.Time `json:"updated_at"`
 }
 
-func (c *Client) TicketPriorityListResult(opts ...Option) *Result[TicketPriority] {
+func (c *client[T]) TicketPriorityListResult(opts ...Option) *Result[TicketPriority] {
 	return &Result[TicketPriority]{
 		res:     nil,
 		resFunc: c.TicketPriorityListWithOptions,
@@ -29,11 +29,11 @@ func (c *Client) TicketPriorityListResult(opts ...Option) *Result[TicketPriority
 	}
 }
 
-func (c *Client) TicketPriorityList() ([]TicketPriority, error) {
+func (c *client[T]) TicketPriorityList() ([]TicketPriority, error) {
 	return c.TicketPriorityListResult().FetchAll()
 }
 
-func (c *Client) TicketPriorityListWithOptions(ro RequestOptions) ([]TicketPriority, error) {
+func (c *client[T]) TicketPriorityListWithOptions(ro RequestOptions) ([]TicketPriority, error) {
 	var ticketPriorities []TicketPriority
 
 	req, err := c.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", c.Url, "/api/v1/ticket_priorities"), nil)
@@ -50,7 +50,7 @@ func (c *Client) TicketPriorityListWithOptions(ro RequestOptions) ([]TicketPrior
 	return ticketPriorities, nil
 }
 
-func (c *Client) TicketPriorityShow(ticketPriorityID int) (TicketPriority, error) {
+func (c *client[T]) TicketPriorityShow(ticketPriorityID int) (TicketPriority, error) {
 	var ticketPriority TicketPriority
 
 	req, err := c.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/ticket_priorities/%d", ticketPriorityID)), nil)
@@ -65,7 +65,7 @@ func (c *Client) TicketPriorityShow(ticketPriorityID int) (TicketPriority, error
 	return ticketPriority, nil
 }
 
-func (c *Client) TicketPriorityCreate(t TicketPriority) (TicketPriority, error) {
+func (c *client[T]) TicketPriorityCreate(t TicketPriority) (TicketPriority, error) {
 	var ticketPriority TicketPriority
 
 	req, err := c.NewRequest(http.MethodPost, fmt.Sprintf("%s%s", c.Url, "/api/v1/ticket_priorities"), t)
@@ -80,7 +80,7 @@ func (c *Client) TicketPriorityCreate(t TicketPriority) (TicketPriority, error) 
 	return ticketPriority, nil
 }
 
-func (c *Client) TicketPriorityUpdate(ticketPriorityID int, t TicketPriority) (TicketPriority, error) {
+func (c *client[T]) TicketPriorityUpdate(ticketPriorityID int, t TicketPriority) (TicketPriority, error) {
 	var ticketPriority TicketPriority
 
 	req, err := c.NewRequest(http.MethodPut, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/ticket_priorities/%d", ticketPriorityID)), t)
@@ -95,7 +95,7 @@ func (c *Client) TicketPriorityUpdate(ticketPriorityID int, t TicketPriority) (T
 	return ticketPriority, nil
 }
 
-func (c *Client) TicketPriorityDelete(ticketPriorityID int) error {
+func (c *client[T]) TicketPriorityDelete(ticketPriorityID int) error {
 
 	req, err := c.NewRequest(http.MethodDelete, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/ticket_priorities/%d", ticketPriorityID)), nil)
 	if err != nil {

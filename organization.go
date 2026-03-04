@@ -25,7 +25,7 @@ type Organization struct {
 	SecondaryMemberIds []int     `json:"secondary_member_ids,omitempty"`
 }
 
-func (c *Client) OrganizationListResult(opts ...Option) *Result[Organization] {
+func (c *client[T]) OrganizationListResult(opts ...Option) *Result[Organization] {
 	return &Result[Organization]{
 		res:     nil,
 		resFunc: c.OrganizationListWithOptions,
@@ -33,11 +33,11 @@ func (c *Client) OrganizationListResult(opts ...Option) *Result[Organization] {
 	}
 }
 
-func (c *Client) OrganizationList() ([]Organization, error) {
+func (c *client[T]) OrganizationList() ([]Organization, error) {
 	return c.OrganizationListResult().FetchAll()
 }
 
-func (c *Client) OrganizationListWithOptions(ro RequestOptions) ([]Organization, error) {
+func (c *client[T]) OrganizationListWithOptions(ro RequestOptions) ([]Organization, error) {
 	var organizations []Organization
 
 	req, err := c.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", c.Url, "/api/v1/organizations"), nil)
@@ -54,7 +54,7 @@ func (c *Client) OrganizationListWithOptions(ro RequestOptions) ([]Organization,
 	return organizations, nil
 }
 
-func (c *Client) OrganizationSearch(query string, limit int) ([]Organization, error) {
+func (c *client[T]) OrganizationSearch(query string, limit int) ([]Organization, error) {
 	var organizations []Organization
 
 	req, err := c.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/organizations/search?query=%slimit=%d", url.QueryEscape(query), limit)), nil)
@@ -69,7 +69,7 @@ func (c *Client) OrganizationSearch(query string, limit int) ([]Organization, er
 	return organizations, nil
 }
 
-func (c *Client) OrganizationShow(organizationID int) (Organization, error) {
+func (c *client[T]) OrganizationShow(organizationID int) (Organization, error) {
 	var organization Organization
 
 	req, err := c.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/organizations/%d", organizationID)), nil)
@@ -84,7 +84,7 @@ func (c *Client) OrganizationShow(organizationID int) (Organization, error) {
 	return organization, nil
 }
 
-func (c *Client) OrganizationCreate(o Organization) (Organization, error) {
+func (c *client[T]) OrganizationCreate(o Organization) (Organization, error) {
 	var organization Organization
 
 	req, err := c.NewRequest(http.MethodPost, fmt.Sprintf("%s%s", c.Url, "/api/v1/organizations"), o)
@@ -99,7 +99,7 @@ func (c *Client) OrganizationCreate(o Organization) (Organization, error) {
 	return organization, nil
 }
 
-func (c *Client) OrganizationUpdate(organizationID int, o Organization) (Organization, error) {
+func (c *client[T]) OrganizationUpdate(organizationID int, o Organization) (Organization, error) {
 	var organization Organization
 
 	req, err := c.NewRequest(http.MethodPut, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/organizations/%d", organizationID)), o)
@@ -114,7 +114,7 @@ func (c *Client) OrganizationUpdate(organizationID int, o Organization) (Organiz
 	return organization, nil
 }
 
-func (c *Client) OrganizationDelete(organizationID int) error {
+func (c *client[T]) OrganizationDelete(organizationID int) error {
 
 	req, err := c.NewRequest(http.MethodDelete, fmt.Sprintf("%s%s", c.Url, fmt.Sprintf("/api/v1/organizations/%d", organizationID)), nil)
 	if err != nil {
