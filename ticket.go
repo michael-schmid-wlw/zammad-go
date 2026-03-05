@@ -10,30 +10,30 @@ import (
 
 // Ticket is a zammad ticket.
 type Ticket[T any] struct {
-	Title                 string        `json:"title"`
-	Group                 string        `json:"group"`
-	OwnerID               int           `json:"owner_id,omitempty"`
-	ID                    int           `json:"id,omitempty"`
-	Article               TicketArticle `json:"article,omitempty"`
-	GroupID               int           `json:"group_id,omitempty"`
-	PriorityID            int           `json:"priority_id,omitempty"`
-	StateID               int           `json:"state_id,omitempty"`
-	State                 string        `json:"state,omitempty"`
-	OrganizationID        int           `json:"organization_id"`
-	Number                string        `json:"number,omitempty"`
-	Customer              string        `json:"customer,omitempty"`
-	CustomerID            int           `json:"customer_id,omitempty"`
-	LastContactAt         time.Time     `json:"last_contact_at,omitempty"`
-	LastContactAgentAt    time.Time     `json:"last_contact_agent_at,omitempty"`
-	LastContactCustomerAt time.Time     `json:"last_contact_customer_at,omitempty"`
-	CreateArticleTypeID   int           `json:"create_article_type_id,omitempty"`
-	CreateArticleSenderID int           `json:"create_article_sender_id,omitempty"`
-	ArticleCount          int           `json:"article_count,omitempty"`
-	UpdatedByID           int           `json:"updated_by_id,omitempty"`
-	CreatedByID           int           `json:"created_by_id,omitempty"`
-	CreatedAt             time.Time     `json:"created_at,omitempty"`
-	UpdatedAt             time.Time     `json:"updated_at,omitempty"`
-	CustomFields          T             `json:"-"`
+	Title                 string         `json:"title,omitempty"`
+	Group                 string         `json:"group,omitempty"`
+	State                 string         `json:"state,omitempty"`
+	Number                string         `json:"number,omitempty"`
+	Customer              string         `json:"customer,omitempty"`
+	ID                    int            `json:"id,omitzero"`
+	OwnerID               int            `json:"owner_id,omitzero"`
+	GroupID               int            `json:"group_id,omitzero"`
+	PriorityID            int            `json:"priority_id,omitzero"`
+	StateID               int            `json:"state_id,omitzero"`
+	CustomerID            int            `json:"customer_id,omitzero"`
+	CreateArticleTypeID   int            `json:"create_article_type_id,omitzero"`
+	CreateArticleSenderID int            `json:"create_article_sender_id,omitzero"`
+	ArticleCount          int            `json:"article_count,omitzero"`
+	UpdatedByID           int            `json:"updated_by_id,omitzero"`
+	CreatedByID           int            `json:"created_by_id,omitzero"`
+	OrganizationID        *int           `json:"organization_id,omitzero"` // could be zero but also null, so pointer
+	Article               *TicketArticle `json:"article,omitzero"`
+	LastContactAt         time.Time      `json:"last_contact_at,omitzero"`
+	LastContactAgentAt    time.Time      `json:"last_contact_agent_at,omitzero"`
+	LastContactCustomerAt time.Time      `json:"last_contact_customer_at,omitzero"`
+	CreatedAt             time.Time      `json:"created_at,omitzero"`
+	UpdatedAt             time.Time      `json:"updated_at,omitzero"`
+	CustomFields          T              `json:"-"`
 }
 
 func (t *Ticket[T]) UnmarshalJSON(data []byte) error {
