@@ -47,29 +47,27 @@ func (t *Ticket[T]) UnmarshalJSON(data []byte) error {
 func (t Ticket[T]) MarshalJSON() ([]byte, error) {
 	type TicketAlias Ticket[T]
 
-	baseBytes, err := json.Marshal(TicketAlias(t))
+	base, err := json.Marshal(TicketAlias(t))
 	if err != nil {
 		return nil, err
 	}
 
-	customBytes, err := json.Marshal(t.CustomFields)
+	custom, err := json.Marshal(t.CustomFields)
 	if err != nil {
 		return nil, err
 	}
 
-	var base, custom map[string]json.RawMessage
-	if err := json.Unmarshal(baseBytes, &base); err != nil {
-		return nil, err
-	}
-	if err := json.Unmarshal(customBytes, &custom); err != nil {
-		return nil, err
+	// T=struct{} oder keine Custom Fields gesetzt → base direkt zurückgeben
+	if len(custom) <= 2 {
+		return base, nil
 	}
 
-	for k, v := range custom {
-		base[k] = v
-	}
-
-	return json.Marshal(base)
+	// {"title":"..."} + {"cf_foo":"bar"} → {"title":"...","cf_foo":"bar"}
+	merged := make([]byte, 0, len(base)+len(custom))
+	merged = append(merged, base[:len(base)-1]...) // trailing } entfernen
+	merged = append(merged, ',')
+	merged = append(merged, custom[1:]...) // leading { entfernen
+	return merged, nil
 }
 
 func (c *client[T]) TicketListResult(opts ...Option) *Result[Ticket[T]] {
