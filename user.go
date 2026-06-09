@@ -14,6 +14,7 @@ type User struct {
 	Login          string    `json:"login"`
 	Firstname      string    `json:"firstname"`
 	Lastname       string    `json:"lastname"`
+	Language       string    `json:"language"`
 	Email          string    `json:"email"`
 	Web            string    `json:"web"`
 	LastLogin      time.Time `json:"last_login"`
