@@ -9,15 +9,15 @@ import (
 
 // User is a Zammad user. See https://docs.zammad.org/en/latest/api/user.html.
 type User struct {
-	ID             int       `json:"id"`
-	OrganizationID int       `json:"organization_id"`
-	Login          string    `json:"login"`
-	Firstname      string    `json:"firstname"`
-	Lastname       string    `json:"lastname"`
-	Language       string    `json:"language"`
-	Email          string    `json:"email"`
-	Web            string    `json:"web"`
-	LastLogin      time.Time `json:"last_login"`
+	ID             int       `json:"id,omitzero"` 
+	OrganizationID int       `json:"organization_id,omitzero"`
+	Login          string    `json:"login,omitempty"`
+	Firstname      string    `json:"firstname,omitempty"`
+	Lastname       string    `json:"lastname,omitempty"`
+	Language       string    `json:"language,omitempty"`
+	Email          string    `json:"email,omitempty"`
+	Web            string    `json:"web,omitempty"`
+	LastLogin      time.Time `json:"last_login,omitzero"`
 }
 
 // UserMe returns the current authenticated user.
